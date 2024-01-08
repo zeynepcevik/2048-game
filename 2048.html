@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>2048</title>
+        <link rel="stylesheet" href="2048.css">
+        <script src="2048.js"></script>
+    </head>
+
+    <body>
+        <h1>2048</h1>
+        <hr>
+        <h2>Score: <span id="score">0</span></h2>
+        <div id="board">
+
+        <div id="game-over-message">
+            <h3>Game Over</h3>
+            <p>There is nowhere left to go. You lost!</p>
+            <p>Your score: <span id="final-score">0</span></p>
+            
+            <button onclick="resetGame()">Play Again</button>
+        </div>    
+        </div>
+
+        <section class="guide clearfix">
+            <h2> How do I play? </h2>
+            <p> Tiles with matching number values can be merged into a single tile, which receives the values' sum.
+            </p>
+            <p> To move the board, use the directional arrows - or swipe.</p>
+            <div class="guide_arrow-wrap">
+             <span class="guide_arrow"> &uHar; </span>
+             <span class="guide_arrow"> &lHar; </span>
+             <span class="guide_arrow"> &rHar; </span>
+             <span class="guide_arrow"> &dHar; </span>
+            </div>
+            <p> To win, get a 2048 tile.
+            </p>
+           </section>
+    </body>
+    <script>
+        
+
+        // Add the following function to check for game over
+        function checkGameOver() {
+            if (!hasEmptyTile() && !canMove()) {
+                alert("There is nowhere left to go. You lost! Your score: " + score);
+            }
+        }
+
+        // Add the following function to check if there are any possible moves left
+        function canMove() {
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < columns; c++) {
+                    // Check horizontally and vertically for adjacent tiles with the same value
+                    if (
+                        (c < columns - 1 && board[r][c] === board[r][c + 1]) ||
+                        (r < rows - 1 && board[r][c] === board[r + 1][c])
+                    ) {
+                        return true; // At least one possible move
+                    }
+                }
+            }
+            return false; // No possible move
+        }
+
+        // Modify your existing setTwo function to call checkGameOver after adding a new 2
+        function setTwo() {
+            if (!hasEmptyTile()) {
+                checkGameOver();
+                return;
+            }
+            let found = false;
+            while (!found) {
+                let r = Math.floor(Math.random() * rows);
+                let c = Math.floor(Math.random() * columns);
+                if (board[r][c] == 0) {
+                    board[r][c] = 2;
+                    let tile = document.getElementById(r.toString() + "-" + c.toString());
+                    tile.innerText = "2";
+                    tile.classList.add("x2");
+                    found = true;
+                }
+            }
+            checkGameOver();
+        }
+
+        // Your existing event listener for keyup
+        document.addEventListener('keyup', (e) => {
+            if (e.code == "ArrowLeft") {
+                slideLeft();
+                setTwo();
+            }
+            else if (e.code == "ArrowRight") {
+                slideRight();
+                setTwo();
+            }
+            else if (e.code == "ArrowUp") {
+                slideUp();
+                setTwo();
+            }
+            else if (e.code == "ArrowDown") {
+                slideDown();
+                setTwo();
+            }
+            document.getElementById("score").innerText = score;
+        });
+    </script>
+</html>
